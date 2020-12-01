@@ -6,10 +6,7 @@
 Postema, M. C., Van Rooij, D., Anagnostou, E., Arango, C., Auzias, G., Behrmann, M., ... & Deruelle, C. (2019). Altered structural brain asymmetry in autism spectrum disorder in a study of 54 datasets. Nature communications, 10(1), 1-12. [Code Link](https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-019-13005-8/MediaObjects/41467_2019_13005_MOESM4_ESM.zip) 
 
 
-
-
 I have assembled the analysis code into one file: **0_run_all_analysis**:
-The output can be found in [output_files](https://github.com/zh1peng/paper_code/tree/main/2021_ADB_Brain_Asymmetry/output_files)
 ```R
 working_dir <- 'F://Google Drive//post-doc//Laterality//Manuscript//Brain_Asymmetry_upload_ADB//code2upload//'
 setwd(working_dir)
@@ -74,3 +71,7 @@ source(paste(working_dir,"14_past_30_day_alc_analysis.R", sep=""))
 source(paste(working_dir,"15_past_30_day_nic_analysis.R", sep=""))
 
 ```
+
+
+**The outputs can be found in [output_files](https://github.com/zh1peng/paper_code/tree/main/2021_ADB_Brain_Asymmetry/output_files)**
+
