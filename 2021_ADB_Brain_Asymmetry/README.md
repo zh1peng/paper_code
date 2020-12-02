@@ -8,6 +8,7 @@ Postema, M. C., Van Rooij, D., Anagnostou, E., Arango, C., Auzias, G., Behrmann,
 
 I have assembled the analysis code into one file: **0_run_all_analysis**:
 ```R
+# run all the analysis
 working_dir <- 'F://Google Drive//post-doc//Laterality//Manuscript//Brain_Asymmetry_upload_ADB//code2upload//'
 setwd(working_dir)
 
@@ -52,13 +53,13 @@ rm(list=setdiff(ls(), "working_dir"))
 source(paste(working_dir,"1_load_data.R", sep=""))
 source(paste(working_dir,"10_residulize_aidata.R", sep=""))
 source(paste(working_dir,"11_residulize_LRdata.R", sep=""))
-source(paste(working_dir,'12_residulized_plots.R',sep="")) # model 1 violin plot
+source(paste(working_dir,'12_residulized_plots.R', sep="")) # model 1 violin plot
 
 
 ##================================= Machine learning SVM (python) ==========================================
 rm(list=setdiff(ls(), "working_dir"))
 source(paste(working_dir,"13_ML_load_data.R", sep=""))
-source(paste(working_dir,"10_residulize_aidata.R", sep=""))
+source(paste(working_dir,"10_residulize_aidata_normalize.R", sep=""))
 write.csv(resid_aidata,'residulized_aidata.csv')
 ## run ML model using python
 library(reticulate)
@@ -69,7 +70,6 @@ rm(list=setdiff(ls(), "working_dir"))
 source(paste(working_dir,"1_load_data.R", sep=""))
 source(paste(working_dir,"14_past_30_day_alc_analysis.R", sep=""))
 source(paste(working_dir,"15_past_30_day_nic_analysis.R", sep=""))
-
 ```
 
 
