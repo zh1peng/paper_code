@@ -4,7 +4,7 @@ LRdata.complete = LRdata[complete.cases(LRdata[,grep("Age|Sex|Site|AI_", colname
 for (region in colnames(LRdata.complete)[grep("L_|R_", colnames(LRdata.complete))] ){
   outcome <- LRdata.complete[,region]
   lme_models[[region]] <- lme(outcome ~ Sex + Age, random=~1|Site, data = LRdata.complete, method="ML", na.action="na.fail")
-  resid_data[[region]] <- resid(lme_models[[region]], type='normalized')
+  resid_data[[region]] <- resid(lme_models[[region]])
   rm(outcome)
 }
 rm(region)
