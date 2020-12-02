@@ -56,7 +56,8 @@ p3=  ggplot(data = df2plot,aes(x = substance, y = NAcc, fill = hem))+
     theme(legend.position = "none",
           axis.title.x=element_blank(),
           axis.text.x = element_blank(),
-          axis.ticks.x=element_blank())
+          axis.ticks.x=element_blank())+
+      ylab('Residulized NAcc Volume')
   
   
   resid_aidata$substance=mapvalues(resid_aidata$PrimaryDrug,from=c('0','1','2','3','4','5'), 
@@ -72,7 +73,7 @@ p3=  ggplot(data = df2plot,aes(x = substance, y = NAcc, fill = hem))+
           axis.text.x = element_text(size=8.5,colour = 'black'))+
     ylab('Residulized NAcc AI')
  
- pdf('Model2_residulized_plot1.pdf') 
+ pdf('Model2_residulized_plot.pdf') 
  grid.arrange(p3,p4,ncol=1) 
   dev.off()
 
