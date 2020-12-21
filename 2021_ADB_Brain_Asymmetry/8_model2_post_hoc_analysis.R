@@ -1,7 +1,7 @@
 library(nlme)
 library(emmeans)
 covs=c("Age", "Sex","Substance_name", "Site")
-for (region in c('AI_accumb','AI_postcentral_surfavg','AI_fusiform_surfavg','AI_put')){
+for (region in c('AI_accumb')){
   
   ## remove missings per data-subset (i.e. separately for each region)
   aidata.complete <- aidata[,c(covs,region)][which(complete.cases(aidata[,c(covs,region)])),]
