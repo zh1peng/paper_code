@@ -3,6 +3,7 @@
 |Folder|Paper|
 |------|------|
 |[2021_ADB_Brain_Asymmetry](https://github.com/zh1peng/paper_code/tree/main/2021_ADB_Brain_Asymmetry)|Mapping cortical and subcortical asymmetries in substance dependence: Findings from the ENIGMA Addiction Working Group|
+|[2021_DCN_MID_Development](https://github.com/zh1peng/paper_code/tree/main/2021_DCN_MID_Development)|Characterizing reward system neural trajectories from adolescence to young adulthood|
 
 
 
