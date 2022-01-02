@@ -1,0 +1,10 @@
+##Request nodes, ppn walltime
+#PBS -l nodes=1:ppn=1,pmem=8gb,pvmem=8gb
+#PBS -l walltime=01:00:00
+# Set job and std names	
+#PBS -N bsl_fc_map
+#PBS -o bsl_fc_map.out
+#PBS -j oe
+#PBS -t 1-1000
+cd $PBS_O_WORKDIR	
+matlab -r 'bsl_fc_map_vacc_function(${PBS_ARRAYID})'
