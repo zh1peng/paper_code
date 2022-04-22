@@ -7,7 +7,7 @@
 |[2021_DCN_MID_Development](https://github.com/zh1peng/paper_code/tree/main/2021_DCN_MID_Development)|Cao, Z., Ottino-Gonzalez, J., Cupertino, R. B., Juliano, A., Chaarani, B., Banaschewski, T., ... & Garavan, H. (2021). Characterizing reward system neural trajectories from adolescence to young adulthood. Developmental Cognitive Neuroscience, 101042.|
 |2022_Cross_disorder_Neurodevelopment (Code will be uploaded later)|Cao, Z., ... & Garavan, H. (2022). Cortical profiles of numerous psychiatric disorders and normal development share a common pattern. Under review|
 |2022_Bayesian_adjustment (Code will be uploaded later)|Recalibrating single-study effect sizes using hierarchical Bayesian models (In prep)|
-|[2022_Brain_GOIs_correlation](https://github.com/zh1peng/paper_code/tree/main/2022_Brain_GOIs_correlation)|Resampling genes with mean correlation as a test statistic inflates false positive associations between transcriptional profiles and imaging-derived phenotypes (In prepr)|
+|[2022_Brain_GOIs_correlation](https://github.com/zh1peng/paper_code/tree/main/2022_Brain_GOIs_correlation)|Resampling genes with mean correlation as a test statistic inflates false positive associations between transcriptional profiles and imaging-derived phenotypes (In prep)|
 
 
 
