@@ -1,0 +1,10 @@
+#!/bin/sh
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=8G
+#SBATCH --time=29:59:00
+#SBATCH --job-name=syn1
+#SBATCH --array=1-79
+#SBATCH --output=%x_%a.log
+cd /gpfs1/home/z/c/zcao4/Coexpression_analysis/SynGO_results
+Rscript --vanilla vacc_syngo_general_function.R ${SLURM_ARRAY_TASK_ID} totally_random
