@@ -143,7 +143,7 @@ sigtest<- function(brain_df,
     cor.null= matrix(NA, nrow=size.glist, ncol=10000)
     for(nreps_i in 1:10000){
       row.ind = sample(size.gall,size = size.glist,replace = F)
-      cor.null[,nreps_i] <- cor.all[row.ind] # cor.all[,row.ind] as it is a 1*n vector 
+      cor.null[,nreps_i] <- cor.all[row.ind] # cor.all[,row.ind] when it is a 1*n vector 
     } 
   } else {
   null_brain_df=build_null_brain_df(shuffle.id, brain_df)
@@ -206,21 +206,21 @@ sigtest<- function(brain_df,
   
   
   mean.under.null.orig=mean(stat.null.orig)
-  #mean.under.null.sqr=mean(stat.null.sqr)
-  #mean.under.null.abs=mean(stat.null.abs)
+  mean.under.null.sqr=mean(stat.null.sqr)
+  mean.under.null.abs=mean(stat.null.abs)
   
   stat.null.oirg.aug=c(stat.true.orig,stat.null.orig)
   stat.null.sqr.aug=c(stat.true.sqr,stat.null.sqr)
   stat.null.abs.aug=c(stat.true.abs,stat.null.abs)
   
   stat.true.orig.adj=stat.true.orig-mean.under.null.orig
-  #stat.true.sqr.adj=stat.true.sqr-mean.under.null.sqr
-  #stat.true.abs.adj=stat.true.abs-mean.under.null.abs
+  stat.true.sqr.adj=stat.true.sqr-mean.under.null.sqr
+  stat.true.abs.adj=stat.true.abs-mean.under.null.abs
   
   
   stat.null.orig.aug.adj=stat.null.oirg.aug-mean.under.null.orig
-  #stat.null.sqr.aug.adj=stat.null.sqr.aug-mean.under.null.sqr
-  #stat.null.abs.aug.adj=stat.null.abs.aug-mean.under.null.abs
+  stat.null.sqr.aug.adj=stat.null.sqr.aug-mean.under.null.sqr
+  stat.null.abs.aug.adj=stat.null.abs.aug-mean.under.null.abs
   
   p.orig=sum(abs(stat.null.orig.aug.adj) >=abs(stat.true.orig.adj))/length(stat.null.orig.aug.adj)
   p.sqr=sum(stat.null.sqr.aug>=stat.true.sqr)/length(stat.null.sqr.aug)
@@ -231,7 +231,7 @@ sigtest<- function(brain_df,
                     mean_r.null025=as.numeric(prctile.orig[1]),
                     mean_r.null975=as.numeric(prctile.orig[2]),
                     mean_r.if_sig=as.logical(if_sig.orig),
-                    mean_r.adj=stat.true.orig.adj,
+                    mean_r.adj=stat.true.orig.adj, # adjustment as proposed in the original paper
                     mean_r.p=p.orig,
                     
                     mean_rsqr=stat.true.sqr,
