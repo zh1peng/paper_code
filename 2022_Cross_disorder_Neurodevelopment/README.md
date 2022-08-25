@@ -1,12 +1,11 @@
-# Code for the 
+# Code for the analysis 
 * Analysis 1. PCA across datasets
 * Analysis 2. Case-control comparisons
 * Analysis 3. Neurodevelopmental effects
 * Analysis 4. Gene expression analysis
 
-Analysis 1-3 used R 3.6.2 
-
-SessionInfo():
+## Analysis 1-3 used R 3.6.2 
+SessionInfo:
 ```
 R version 3.6.2 (2019-12-12)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
@@ -509,3 +508,284 @@ t2save=cor_t2save(cor.list)
 write.csv(t2save,sprintf('%s/supp_analysis_dev_cor_mat_spin.csv',result_path))
 
 ```
+
+## Analysis 4 used R 4.1.0
+SessionInfo:
+```
+R version 4.1.0 (2021-05-18)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19044)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=Chinese (Simplified)_China.936  LC_CTYPE=Chinese (Simplified)_China.936   
+[3] LC_MONETARY=Chinese (Simplified)_China.936 LC_NUMERIC=C                              
+[5] LC_TIME=Chinese (Simplified)_China.936    
+
+attached base packages:
+[1] parallel  stats4    stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] ggplot2_3.3.5         GOSemSim_2.18.0       enrichplot_1.12.2     DOSE_3.18.1           org.Hs.eg.db_3.13.0  
+ [6] AnnotationDbi_1.54.1  IRanges_2.26.0        S4Vectors_0.30.0      Biobase_2.52.0        BiocGenerics_0.38.0  
+[11] clusterProfiler_4.0.2
+
+loaded via a namespace (and not attached):
+ [1] nlme_3.1-152           bitops_1.0-7           ggtree_3.0.2           bit64_4.0.5            RColorBrewer_1.1-3    
+ [6] httr_1.4.2             GenomeInfoDb_1.28.1    tools_4.1.0            utf8_1.2.1             R6_2.5.0              
+[11] lazyeval_0.2.2         DBI_1.1.1              colorspace_2.0-2       withr_2.5.0            tidyselect_1.1.1      
+[16] gridExtra_2.3          bit_4.0.4              compiler_4.1.0         cli_3.0.1              scatterpie_0.1.6      
+[21] shadowtext_0.0.8       scales_1.1.1           stringr_1.4.0          digest_0.6.27          XVector_0.32.0        
+[26] pkgconfig_2.0.3        fastmap_1.1.0          rlang_1.0.4            rstudioapi_0.13        RSQLite_2.2.7         
+[31] farver_2.1.0           generics_0.1.0         jsonlite_1.7.2         BiocParallel_1.26.1    dplyr_1.0.7           
+[36] RCurl_1.98-1.3         magrittr_2.0.1         GO.db_3.13.0           GenomeInfoDbData_1.2.6 patchwork_1.1.1       
+[41] Matrix_1.3-4           Rcpp_1.0.7             munsell_0.5.0          fansi_0.5.0            ape_5.5               
+[46] viridis_0.6.1          lifecycle_1.0.1        stringi_1.6.2          ggraph_2.0.5           MASS_7.3-54           
+[51] zlibbioc_1.38.0        plyr_1.8.6             qvalue_2.24.0          grid_4.1.0             blob_1.2.1            
+[56] ggrepel_0.9.1          DO.db_2.9              crayon_1.4.1           lattice_0.20-44        graphlayouts_0.7.1    
+[61] Biostrings_2.60.1      cowplot_1.1.1          splines_4.1.0          KEGGREST_1.32.0        pillar_1.6.1          
+[66] fgsea_1.18.0           igraph_1.2.6           reshape2_1.4.4         fastmatch_1.1-0        glue_1.4.2            
+[71] downloader_0.4         BiocManager_1.30.16    data.table_1.14.0      treeio_1.16.1          png_0.1-7             
+[76] vctrs_0.3.8            tweenr_1.0.2           gtable_0.3.0           purrr_0.3.4            polyclip_1.10-0       
+[81] tidyr_1.1.3            cachem_1.0.5           ggforce_0.3.3          tidygraph_1.2.0        tidytree_0.3.4        
+[86] viridisLite_0.4.0      tibble_3.1.2           rvcheck_0.1.8          aplot_0.0.6            memoise_2.0.0         
+[91] ellipsis_0.3.2        
+```
+```R
+# 4. gene expression analysis
+# need to change to R 4+ as clusterProfiler required
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(DOSE)
+library(enrichplot)
+library(GOSemSim)
+library(ggplot2)
+
+result_path=file.path(data_path,'all_results/analysis4-ORA')
+dir.create(result_path)
+
+# 4.1. prepare data: merge pc1/gene/centroid
+r2test=0.4 # 
+gene_data=read.csv(sprintf('%s/allgenes_stable_r%s.csv',code_path,r2test))%>%rename_with(~paste0('gene_',.),-c('label'))
+# PC1 pattern
+pc1=pca.merged$stand_loadings %>% 
+  mutate(label=rownames(.),
+         label=sub('resid_L_','L_',label),
+         label=sub('resid_R_','R_',label),
+         label=sub('_thickavg','',label)) %>% 
+  select(label,PC1) %>%
+  rename(brain_PC1=PC1)
+
+# coordinate data
+lh_centroid_data=read.csv(sprintf('%s/lh_centroid.csv',code_path))
+rh_centroid_data=read.csv(sprintf('%s/rh_centroid.csv',code_path))
+lr_centroid=rbind(lh_centroid_data,rh_centroid_data)
+colnames(lr_centroid)=c('label','centroid1','centroid2','centroid3')
+
+# merge all data by label and remove regions with NA values
+df_all=merge(merge(gene_data,pc1,by='label'),lr_centroid,by='label')%>%filter(complete.cases(.))
+
+
+# 4.2. Find significant genes
+gene_df=df_all %>% select(starts_with('gene_'))
+# get centroid.l/centroid.r for 66 regions
+centroid.l=df_all %>% filter(grepl('^L_',label)) %>%  select(starts_with('centroid'))
+centroid.r=df_all %>% filter(grepl('^R_',label)) %>%  select(starts_with('centroid'))
+brain_df=df_all %>% select(starts_with('brain'))
+
+#perm.id=rotate.parcellation(as.matrix(centroid.l),as.matrix(centroid.r),nrot=10000)
+#saveRDS(perm.id,paste(code_path,'66perm_id.rds',sep='/'))
+perm.id=readRDS(paste(code_path,'66perm_id.rds',sep='/')) 
+
+null_brain_df=build_null_brain_df(perm.id,brain_df)
+
+true_r_vals=cor(gene_df,brain_df)
+hist(true_r_vals,breaks = seq(min(true_r_vals), max(true_r_vals), length.out = 100),main = ' Distribution of true r')
+
+null_r_vals=cor(gene_df,null_brain_df,method='pearson')
+pos_null_dist=apply(null_r_vals,2,'max') # for each iteration find the max number
+neg_null_dist=apply(null_r_vals,2,'min') # for each iteration find the min number
+
+pos_cutoff=quantile(pos_null_dist,.95)
+neg_cutoff=quantile(neg_null_dist,.05)
+
+# calculate p value following the FWE procedure. 
+fwe_spin_p=as.numeric()
+for (n in c(1:length(true_r_vals))){
+  fwe_spin_p[n]=caculate_p_from_null(pos_null_dist,neg_null_dist, true_r_vals[n])
+}
+
+# calculate a normal p spin value for each correlation
+# p.spin <-matrix(nrow = ncol(gene_df), 1)
+# for (i in c(1:ncol(gene_df))) {
+#   print(i)
+#   p.spin[i,1] <- perm.sphere.p(brain_df$brain_PC1,gene_df[,i],perm.id,corr.type='pearson')}
+
+# calculate a normal p value without spin test
+true_p_vals=outer(gene_df, brain_df, Vectorize(function(a, b) cor.test(a, b, method='pearson')$p.value))
+
+all_results=data.frame(gene_name=sub('gene_','',colnames(gene_df)),
+                       r_vals=true_r_vals[,1],
+                       p_vals=true_p_vals[,1],
+                       fwe_spin_p=fwe_spin_p) 
+
+all_results$if_sig[all_results$r_vals>pos_cutoff & all_results$r_vals>0] = "Pos"
+all_results$if_sig[all_results$r_vals<neg_cutoff & all_results$r_vals<0 ] = "Neg"
+all_results$if_sig[all_results$r_vals>=neg_cutoff & all_results$r_vals <= pos_cutoff ] = "NS"
+df2save=all_results %>% filter(if_sig!='NS') %>% select(-if_sig) %>% arrange(desc(r_vals))
+
+write.csv(df2save, sprintf('%s/sig_gene_info_r%s.csv',result_path,r2test),row.names = F)
+
+# 4.3. ORA Analysis
+enricher_internal <- getFromNamespace('enricher_internal','clusterProfiler')
+
+r2test=0.4
+sig_genes_df=read.csv(sprintf('%s/sig_gene_info_r%s.csv',result_path,r2test))
+all_genes_df=read.csv(sprintf('%s/allgenes_stable_r%s.csv',code_path,r2test))
+sig_genes=sig_genes_df$gene_name
+
+sig_gene_symbol=as.character(sig_genes)
+bg_genes=colnames(all_genes_df)[-1]
+bg_gene_symbol=as.character(bg_genes)
+  
+ # GO enrichment 
+for (ont2use in c('BP','MF','CC')){
+enrich.go=enrichGO(gene=sig_gene_symbol,
+                  universe = bg_gene_symbol,
+                  OrgDb=org.Hs.eg.db,
+                  keyType="SYMBOL",
+                  ont=ont2use,
+                  pvalueCutoff = 1,
+                  minGSSize = 10,
+                  maxGSSize = 200)
+ora_df=data.frame(enrich.go)
+write.csv(ora_df,sprintf('%s/GO_%s_ORA_results_%s.csv',result_path,ont2use,r2test))
+}
+
+  
+# ORA with development
+for (pSI.threshold in c(0.05, 0.025, 0.01,0.005,0.0025, 0.001)){
+  GS_file=sprintf('%s/pSI/pSI_only_cortex_table_%s.csv',code_path,pSI.threshold)
+  USER_DATA=create_USER_DATA(GS_file)
+  
+  enrich.go=enricher_internal(gene=sig_gene_symbol,
+                              universe = bg_gene_symbol,
+                              pvalueCutoff = 1,
+                              pAdjustMethod = 'BH',
+                              minGSSize = 1,
+                              maxGSSize = 1000,
+                              qvalueCutoff = 1,
+                              USER_DATA = USER_DATA)
+  
+  ora_df=data.frame(enrich.go)
+  ora_df$GeneRatio=paste0("'",ora_df$GeneRatio) #otherwise it will become a date
+  write.csv(ora_df,sprintf('%s/DEV_cortex_thres%s_ORA_results_%s.csv',result_path,pSI.threshold,r2test))
+}
+
+# 4.4. GSEA/GCEA analysis
+source(paste(code_path,'gsea_functions.R',sep = '/'))
+result_path=file.path(data_path,'all_results/analysis4-GSEA')
+dir.create(result_path)
+
+r2test=0.4
+
+gene_data=read.csv(sprintf('%s/allgenes_stable_r%s.csv',code_path,r2test))%>%rename_with(~paste0('gene_',.),-c('label'))
+  
+# merge all data by label and remove regions with NA values
+df_all=merge(merge(gene_data,pc1,by='label'),lr_centroid,by='label')%>%filter(complete.cases(.))
+
+# do correlation between PC1 and gene expression
+gene_df=df_all %>% dplyr::select(starts_with('gene_'))
+# get centroid.l/centroid.r for 66 regions
+centroid.l=df_all %>% filter(grepl('^L_',label)) %>%  dplyr::select(starts_with('centroid'))
+centroid.r=df_all %>% filter(grepl('^R_',label)) %>%  dplyr::select(starts_with('centroid'))
+brain_df=df_all %>% dplyr::select(starts_with('brain'))
+
+#perm.id=rotate.parcellation(as.matrix(centroid.l),as.matrix(centroid.r),nrot=10000)
+#saveRDS(perm.id,paste(code_path,'66perm_id.rds',sep='/'))
+perm.id=readRDS(paste(code_path,'66perm_id.rds',sep='/')) 
+  
+ null_brain_df=build_null_brain_df(perm.id,brain_df)
+  
+# get r value for analysis
+true_r_vals=cor(gene_df,brain_df,method='pearson')
+null_r_vals=cor(gene_df,null_brain_df,method='pearson')
+  
+  
+## DO GSEA/GCEA for GO- CC/MF/BP enrichment analysis
+for (ont2use in c('CC','MF','BP')){
+  USER_DATA=get_GO_data('org.Hs.eg.db',ont2use,'SYMBOL') # or
+  
+  gsea_df=enrich_with_snull(true_r_vals,
+                            null_r_vals,
+                            USER_DATA,
+                            minGSSize=10,
+                            maxGSSize=200,
+                            by='gsea')
+  
+  gcea_df=enrich_with_snull(true_r_vals,
+                            null_r_vals,
+                            USER_DATA,
+                            minGSSize=10,
+                            maxGSSize=200,
+                            by='gcea')
+  
+  write.csv(gsea_df,sprintf('%s/GO_%s_GSEA_results_%s_10-200.csv',result_path,ont2use,r2test))
+  write.csv(gcea_df,sprintf('%s/GO_%s_GCEA_results_%s.csv',result_path,ont2use,r2test))
+}
+  
+  
+# DO GSEA/GCEA for developmental stages
+  for (pSI.threshold in c(0.05, 0.025, 0.01)){
+    GS_file=sprintf('%s/pSI/pSI_only_cortex_table_%s.csv',code_path,pSI.threshold)
+    USER_DATA=create_USER_DATA(GS_file)
+    
+    gsea_df=enrich_with_snull(true_r_vals,
+                              null_r_vals,
+                              USER_DATA,
+                              minGSSize=10,
+                              maxGSSize=1000,
+                              by='gsea')
+    
+    gcea_df=enrich_with_snull(true_r_vals,
+                              null_r_vals,
+                              USER_DATA,
+                              minGSSize=10,
+                              maxGSSize=1000,
+                              by='gcea')
+    
+    write.csv(gsea_df,sprintf('%s/DEV_cortex_%s_GSEA_results_%s.csv',result_path,pSI.threshold,r2test))
+    write.csv(gcea_df,sprintf('%s/DEV_cortex_%s_GCEA_results_%s.csv',result_path,pSI.threshold,r2test))
+}
+
+# 4.5. Plot significant GO terms
+for (ont2use in c('CC','MF','BP')){
+  USER_DATA=get_GO_data('org.Hs.eg.db',ont=ont2use,'SYMBOL')
+  d = godata('org.Hs.eg.db', ont=ont2use,keytype = "SYMBOL",
+             computeIC=FALSE) # computeIC=FALSE when use Wang method
+  gcea_res_list=enrich_with_snull(true_r_vals,
+                                  null_r_vals,
+                                  USER_DATA,
+                                  minGSSize=10,
+                                  maxGSSize=200,
+                                  by='gcea',
+                                  returnDF = F) # this will return the obj and res table
+  gcea_res_updated=update_gcea_res.obj(gcea_res_list,
+                                       settype = ont2use,
+                                       filter_fdrp=T,
+                                       threshold=0.05)
+  gcea_res_updated=pairwise_termsim(gcea_res_updated, method="Wang", semData = d)
+  p=treeplot(gcea_res_updated,
+             showCategory = 30,
+             cex_category = 0.6,
+             nCluster = 6,
+             nWords = 3,
+             color='pvalue',
+             offset = rel(14))+
+    scale_size(guide = "none")
+  ggsave(sprintf('%s/GO_%s_GCEA_plot_%s.png',result_path,ont2use,r2test),
+         p, width = 16, height = 8)
+}
+```
+
