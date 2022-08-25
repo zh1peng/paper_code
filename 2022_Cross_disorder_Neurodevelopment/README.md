@@ -665,7 +665,7 @@ write.csv(ora_df,sprintf('%s/GO_%s_ORA_results_%s.csv',result_path,ont2use,r2tes
 
   
 # ORA with development
-for (pSI.threshold in c(0.05, 0.025, 0.01,0.005,0.0025, 0.001)){
+for (pSI.threshold in c(0.01)){# 0.01 is used given the number of genes after intersection with gene expression data
   GS_file=sprintf('%s/pSI/pSI_only_cortex_table_%s.csv',code_path,pSI.threshold)
   USER_DATA=create_USER_DATA(GS_file)
   
@@ -737,7 +737,7 @@ for (ont2use in c('CC','MF','BP')){
   
   
 # DO GSEA/GCEA for developmental stages
-  for (pSI.threshold in c(0.05, 0.025, 0.01)){
+  for (pSI.threshold in c(0.01)){ # 0.01 is used given the number of genes after intersection with gene expression data
     GS_file=sprintf('%s/pSI/pSI_only_cortex_table_%s.csv',code_path,pSI.threshold)
     USER_DATA=create_USER_DATA(GS_file)
     
