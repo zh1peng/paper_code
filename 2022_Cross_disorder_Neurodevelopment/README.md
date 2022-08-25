@@ -1,10 +1,35 @@
-# Code for the analysis 
+# Code for paper: [citation]
+
+
+### Files:
+* `all_dev_es`: effect sizes for the 
+* `allgenes_stable_r0.4`: gene expression data 
+* `dk_abbrevation`: abbrevation for Desikan atlas
+* `dk_standard_var_order`: Desikan labels in the order of Freesufer output
+* `lh_centroid`: centroids for left Desikan regions
+* `rh_centroid`: centroids for right Desikan regions
+* `pSI_data`: pSI data thresholded at 0.01
+* `66perm_id.rds`: permutation ids for 66 ROIs (it is used for creating spatial null model in gene expression analysis)
+* `68perm_id.rds`: permutation ids for 68 ROIs (it is used for spin test)
+
+
+### Functions:
+* `pca_functions`: data process and pca related functions
+* `group_comp_functions`: group comparisons and longitudinal models
+* `gsea_functions`: gsea/gcea related functions
+* `correlation_functions`: correlation and spin test related functions
+* `external_functions`: utility functions from other packages
+
+
+### Analysis_script
+Script to run the analysis:
 * Analysis 1. PCA across datasets
 * Analysis 2. Case-control comparisons
 * Analysis 3. Neurodevelopmental effects
 * Analysis 4. Gene expression analysis
 
-## Analysis 1-3 used R 3.6.2 
+Analysis_script is showing here as well:
+**Analysis 1-3 used R 3.6.2**
 SessionInfo:
 ```
 R version 3.6.2 (2019-12-12)
@@ -509,7 +534,7 @@ write.csv(t2save,sprintf('%s/supp_analysis_dev_cor_mat_spin.csv',result_path))
 
 ```
 
-## Analysis 4 used R 4.1.0
+**Analysis 4 used R 4.1.0**
 SessionInfo:
 ```
 R version 4.1.0 (2021-05-18)
