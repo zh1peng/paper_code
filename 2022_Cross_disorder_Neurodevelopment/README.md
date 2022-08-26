@@ -19,16 +19,17 @@
 * `gsea_functions`: gsea/gcea related functions
 * `correlation_functions`: correlation and spin test related functions
 * `external_functions`: utility functions from other packages
+* `analysis_script`: script to run the analyses:
 
 
-### Analysis_script
-Script to run the analysis:
+`analysis_script` includes following analysis:
 * Analysis 1. PCA across datasets
 * Analysis 2. Case-control comparisons
 * Analysis 3. Neurodevelopmental effects
 * Analysis 4. Gene expression analysis
+The contents of the analysis_script is showing below as well:
 
-Analysis_script is showing here as well:
+
 **Analysis 1-3 used R 3.6.2**
 SessionInfo:
 ```
