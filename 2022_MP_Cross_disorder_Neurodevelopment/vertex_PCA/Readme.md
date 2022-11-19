@@ -1,0 +1,1 @@
+Mgh data was fisrt merged using nilearn and then the vertexwise PCA was performed using R and the results were saved to mat file and plotted using Matlab. The correlation analysis was performed on the downsampled (to Desikan) standard loadings.
