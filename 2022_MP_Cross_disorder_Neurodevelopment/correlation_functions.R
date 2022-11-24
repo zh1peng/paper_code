@@ -103,6 +103,8 @@ build_null_brain_df <- function(perm.id,brain_df){
 
 
 # p is calculated as the quantile of the true r in the null distribution
+# note: a better way is to +1 so that p will not be 0.
+
 caculate_p_from_null <- function(pos_null_dist,neg_null_dist, r_val){
   if (r_val>0){
     p_val=sum(pos_null_dist>r_val)/length(pos_null_dist)
