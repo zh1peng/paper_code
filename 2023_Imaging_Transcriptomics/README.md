@@ -3,7 +3,7 @@ data: data used for the analysis e.g., gene set, simulated brain maps etc
 
 real_res_raw: results of realistic brain maps and gene sets
 
-sim_res_raw: results of simulated brain maps
+sim_res_raw: results of simulated brain maps (They are large files (>400MB), therefore, not uploaded)
 
 ## Functions
 functions: functions used for the analysis
