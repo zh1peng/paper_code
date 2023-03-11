@@ -11,7 +11,7 @@ functions: functions used for the analysis
 
 vacc_functions: functions used for the analysis on HPC (vacc)
 
-random_brain_maps: simulated brain maps using subsampling and GRF appraoch
+random_brain_maps: simulated brain maps using subsampling and GRF appraoches
 
 
 ## Code to implement analysis
