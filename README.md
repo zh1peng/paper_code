@@ -7,7 +7,8 @@
 |[2021_DCN_MID_Development](https://github.com/zh1peng/paper_code/tree/main/2021_DCN_MID_Development)|Cao, Z., Ottino-Gonzalez, J., Cupertino, R. B., Juliano, A., Chaarani, B., Banaschewski, T., ... & Garavan, H. (2021). Characterizing reward system neural trajectories from adolescence to young adulthood. Developmental Cognitive Neuroscience, 101042.|
 |[2022_Cross_disorder_Neurodevelopment](https://github.com/zh1peng/paper_code/tree/main/2022_MP_Cross_disorder_Neurodevelopment)| Cao, Z., Cupertino, R.B., Ottino-Gonzalez, J. et al. Cortical profiles of numerous psychiatric disorders and normal development share a common pattern. Molecular Psychiatry (2022).|
 |[2022_Bayesian_adjustment](https://github.com/zh1peng/paper_code/tree/main/2022_Bayesian_adjustment)|Recalibrating single-study effect sizes using hierarchical Bayesian models. (Under consideration)|
-|[2022_Brain_GOIs_correlation](https://github.com/zh1peng/paper_code/tree/main/2022_Brain_GOIs_correlation)| Resampling genes with mean correlation as a test statistic inflates false positive rates in associations between transcriptional profiles and imaging-derived phenotypes. (In revision)|
+|[2023_Imaging_Transcriptomics](https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics)| Unraveling the molecular relevance of brain phenotypes: A comparative analysis of null models and test statistics. (Under consideration)|
+|[2023_Alcohol_subtyping](https://github.com/zh1peng/paper_code/tree/main/2023_Alcohol_subtyping)| Identification of cortical-based subtypes in alcohol dependence (In prep)|
 
 
 
