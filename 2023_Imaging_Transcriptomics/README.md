@@ -1,3 +1,4 @@
+# Analysis code for "Unraveling the molecular relevance of brain phenotypes: A comparative analysis of null models and test statistics"
 ## Data
 data: data used for the analysis e.g., gene set, simulated brain maps etc
 
