@@ -1,11 +1,17 @@
 ## Data
 data: data used for the analysis e.g., gene set, simulated brain maps etc
+
 real_res_raw: results of realistic brain maps and gene sets
+
 sim_res_raw: results of simulated brain maps
+
 ## Functions
 functions: functions used for the analysis
+
 vacc_functions: functions used for the analysis on HPC (vacc)
+
 random_brain_maps: simulated brain maps using subsampling and GRF appraoch
+
 
 ## Code to implement analysis
 Downlaod the html or click the link to preview the html
