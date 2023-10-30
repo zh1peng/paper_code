@@ -1,0 +1,13 @@
+#!/bin/sh
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=8G
+#SBATCH --time=30:00:00
+#SBATCH --job-name=gs_match
+#SBATCH --array=1-316
+#SBATCH --output=job1.out
+
+
+
+cd /gpfs1/home/z/c/zcao4/revision_code/data/sampled_GeneSets
+Rscript --vanilla generate_sampled_GeneSets.R desikan r0.4 MF match_coexp ${SLURM_ARRAY_TASK_ID}
