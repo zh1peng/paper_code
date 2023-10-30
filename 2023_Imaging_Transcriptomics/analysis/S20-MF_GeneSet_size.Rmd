@@ -1,0 +1,212 @@
+---
+title: "Analysis S20: Exploring the impacts of size of molecular functions relevant gene sets on Psig-G"
+output:
+  
+  html_document:
+    df_print: paged
+  html_notebook: default
+  word_document: default
+---
+
+```{css, echo=FALSE}
+.watch-out {
+  background-color: lightpink;
+  border: 3px solid red;
+  font-weight: bold;
+}
+```
+
+
+## 0. Setup
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+project_path='F:/Google Drive/post-doc/vitural_histology_revisit/revision_code'
+
+sim_res_path=sprintf('%s/results',project_path)
+result.path=sprintf('%s/reports',project_path)
+
+atlas='desikan'
+rdonor='r0.4'
+brain_type='sim_spatial0.03'
+gene_set_type='MF'
+cor_type='pearson'
+null_type_level=c('random_gene',
+                   'spin_brain')
+null_type_label=c('Competitive null model',
+                   'Self-contained null model')
+stat_level=c('mean',
+            'meanabs',
+            'meansqr',
+            'maxmean',
+            'median',
+            'sig_n',
+            'ks_orig',
+            'ks_weighted')
+stat_label=c('Mean',
+            'Meanabs',
+            'Meansqr',
+            'Maxmean',
+            'Median',
+            'Sig Number',
+            'KS',
+            'Weighted KS')
+```
+
+## 1. Load functions
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+library(nlme)
+library(sjPlot)
+source(sprintf('%s/functions/analysis_functions.R',project_path))
+source(sprintf('%s/functions/data_functions.R',project_path))
+source(sprintf('%s/functions/cor_functions.R',project_path))
+```
+
+## 2. Load Results
+```{r }
+
+# get the list of csv files
+res.files=list(
+  random_gene=sprintf('%s/Res_%s_%s_%s_%s_random_gene_%s_sim1000.csv',sim_res_path,atlas,rdonor,brain_type,gene_set_type,cor_type),
+  spin_brain=sprintf( '%s/Res_%s_%s_%s_%s_spin_brain_%s_sim1000.csv',sim_res_path,atlas,rdonor,brain_type,gene_set_type,cor_type))
+# read res.files
+res.df.list=lapply(res.files, read.csv, stringsAsFactors = F)
+```
+
+
+## 3.Examining the correlation between gene set size and Psig-G
+
+```{r,message=FALSE, warning=FALSE, paged.print=FALSE}
+# Extract pvals and group them by geneSet 
+# Psig-G is calculated for each gene set
+nest_by='geneSet'
+pvals.nested=lapply(res.df.list, get_pvals_nested, nest_by=nest_by, heat_plot=F)
+psig.list=lapply(pvals.nested, get_psig, if_fdr=F)
+size_info=get_geneSetList_info(data_path=sprintf('%s/data',project_path),
+                                 gs_type=gene_set_type,
+                                 atlas=atlas,
+                                 rdonor=rdonor)
+size_res.nested.list=lapply(psig.list, correlate_psig_with_info,info=size_info,var2test='size')
+size_res.report.list=lapply(size_res.nested.list, report_res.nested)
+size_res.plot.list=lapply(size_res.nested.list, 
+                           plot_res.nested, 
+                           xlim2show=c(0,250),
+                           annot_position=c(40,0.5))
+```
+
+### 3.1. Plot correlation between gene set size and Psig-G
+#### Figure 1. Results of gene set size analysis for the competitive null model. The x-axis indicates the size of a specific gene set and the y-axis indicates the probability of significance for a specific gene set (Psig-G). Each dot denotes a specific gene set and the horizontal dashed line denotes a Psig-G of 0.05. 
+```{r include=F}
+p1=grid.arrange(grobs=size_res.plot.list[[null_type_level[1]]],
+                ncol=2,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Gene set size",gp=gpar(fontsize=12,font=2)))
+
+p2=grid.arrange(grobs=size_res.plot.list[[null_type_level[2]]],
+                ncol=2,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Gene set size",gp=gpar(fontsize=12,font=2)))
+
+```
+
+```{r eval=FALSE,echo=T}
+p1=grid.arrange(grobs=size_res.plot.list[[null_type_level[1]]],
+                ncol=2,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Gene set size",gp=gpar(fontsize=12,font=2)))
+
+p2=grid.arrange(grobs=size_res.plot.list[[null_type_level[2]]],
+                ncol=2,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Gene set size",gp=gpar(fontsize=12,font=2)))
+grid.arrange(p1,p2)
+```
+```{r fig.height=16, fig.width=12, echo=FALSE}
+grid.arrange(p1,p2)
+```
+
+
+### 3.2. Report correlation between gene set size and Psig-G
+
+```{r,eval=FALSE}
+df1=size_res.report.list[[null_type_level[1]]]
+df2=size_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+```{r,echo=FALSE}
+df1=size_res.report.list[[null_type_level[1]]]
+df2=size_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+## 4.Examining interactive effects between gene set size and co-expression on Psig-G
+
+```{r}
+int_res.nested.list=lapply(psig.list, correlate_psig_with_info,info=size_info,var2test='coexp_mean',int_size=TRUE)
+int_res.report.list=lapply(int_res.nested.list, int_report_res.nested)
+int_res.plot.list=lapply(int_res.nested.list, int_plot_res.nested)
+```
+
+
+### 4.1. Plot interative effects between gene set size and co-expression on Psig-G
+#### Figure 2. Marginal effects of the interaction between gene set size and co-expression on Psig-G. The x-axis indicates the co-expression, and y-axis represents predicted Psig-G values for three selected gene set sizes: 50, 100, and 200.
+```{r include=F}
+p3=grid.arrange(grobs=int_res.plot.list[[null_type_level[1]]],ncol=3,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Marginal Effects on Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Co-expression",gp=gpar(fontsize=12,font=2)))
+
+p4=grid.arrange(grobs=int_res.plot.list[[null_type_level[2]]],ncol=3,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Marginal Effects on Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Co-expression",gp=gpar(fontsize=12,font=2)))
+```
+
+```{r eval=FALSE,echo=T}
+p3=grid.arrange(grobs=int_res.plot.list[[null_type_level[1]]],ncol=3,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Marginal Effects on Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Co-expression",gp=gpar(fontsize=12,font=2)))
+
+p4=grid.arrange(grobs=int_res.plot.list[[null_type_level[2]]],ncol=3,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Marginal Effects on Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Co-expression",gp=gpar(fontsize=12,font=2)))
+grid.arrange(p3,p4)
+```
+```{r fig.height=16, fig.width=12, echo=FALSE}
+grid.arrange(p3,p4)
+```
+
+### 4.2. Report interactive effects between gene set size and Psig-G
+```{r,eval=FALSE}        
+
+df1=int_res.report.list[[null_type_level[1]]]
+df2=int_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+```{r,echo=FALSE}        
+df1=int_res.report.list[[null_type_level[1]]]
+df2=int_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
