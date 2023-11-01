@@ -1,9 +1,10 @@
 # Analysis code for "Unraveling the molecular relevance of brain phenotypes: A comparative analysis of null models and test statistics"
 
 
-## Code to implement analysis
+## Main and Supplementary Analysis
 Downlaod the html or click the link to preview the html
 
+Table S2
 | Analysis | Atlas (Number of regions) | Rdonor | Brain data | Gene set | Association | Null model type | Test statistic (Aggregation method) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | [Main](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/Main.html) | Desikan (34) | 0.4 | 1000 simulated maps maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
@@ -25,3 +26,9 @@ Downlaod the html or click the link to preview the html
 | [S16](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S16-Leave-one-region-out.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Leave-one-region-out correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, KS, Weighted KS |
 | [S17](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S17-Combined_null.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Competitive and Self-contained combined | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
 
+
+| Analysis | Description |
+| --- | --- |
+|[S18](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S18-MoranI.html)|S18: Comparisons between the subsampling approach and Gaussian random fields (GRFs) approach in simulating random desikan, schaefer100 and schaefer200 data with spatial autocorrelation as measured by Global Moran's I|
+|[S19](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S19-Simulated_GeneSet_Size.html)|Analysis S19: Exploring the impacts of size of simulated gene sets on Psig-G|
+|[S20](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S20-MF_GeneSet_Size.html)|Exploring the impacts of size of molecular functions relevant gene sets on Psig-G|
