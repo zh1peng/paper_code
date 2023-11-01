@@ -1,8 +1,7 @@
-# Analysis code for "Unraveling the molecular relevance of brain phenotypes: A comparative analysis of null models and test statistics"
+# Unraveling the molecular relevance of brain phenotypes: A comparative analysis of null models and test statistics
 
-
-## Main and Supplementary Analysis
-Downlaod the html or click the link to preview the html
+Main and Supplementary Analysis
+(Downlaod the html in analysis folder or click the link to preview the html)
 
 Table S2
 | Analysis | Atlas (Number of regions) | Rdonor | Brain data | Gene set | Association | Null model type | Test statistic (Aggregation method) |
