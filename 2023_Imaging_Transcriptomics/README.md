@@ -1,28 +1,27 @@
 # Analysis code for "Unraveling the molecular relevance of brain phenotypes: A comparative analysis of null models and test statistics"
-## Data
-data: data used for the analysis e.g., gene set, simulated brain maps etc
-
-real_res_raw: results of realistic brain maps and gene sets
-
-sim_res_raw: results of simulated brain maps (They are large files (>400MB), therefore, not uploaded)
-
-## Functions
-functions: functions used for the analysis
-
-vacc_functions: functions used for the analysis on HPC (vacc)
-
-random_brain_maps: simulated brain maps using subsampling and GRF appraoches
 
 
 ## Code to implement analysis
 Downlaod the html or click the link to preview the html
 
-|Analysis|
-|------|
-|[01-Main_analysis](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/01-Main_analysis.html)|
-|[02-MoranI_analysis](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/02-MoranI_analysis.html)|
-|[03-SI-analysis_with_Moran002](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/03-SI-analysis_with_Moran002.html)|
-|[04-SI-analysis_with_Moran001](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/04-SI-analysis_with_Moran001.html)|
-|[05-SI-analysis_with_GO-MF](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/05-SI-analysis_with_GO-MF.html)|
-|[06-SI-analysis_with_realistic_maps](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/06-SI-analysis_with_realistic_maps.html)|
+| Analysis | Atlas (Number of regions) | Rdonor | Brain data | Gene set | Association | Null model type | Test statistic (Aggregation method) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| [Main](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/Main.html) | Desikan (34) | 0.4 | 1000 simulated maps maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S1](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S1-Moran0.02.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.02) | 500 simulated gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S2](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S2-Moran0.01.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.01) | 500 simulated gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S3](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S3-MF.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 316 MF gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S4](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S4-Rdonor0.2.html) | Desikan (34) | 0.2 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S5](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S5-Coexp_matched.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Coexpression-matched Competitive | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S6](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S6-Brain_specific.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Brain-specific Competitive | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S7](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S7-Shaefer100.html) | Shaefer100 (50) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S8](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S8-Shaefer200.html) | Shaefer200 (100) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S9](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S9-Realistic.html) | Desikan (34) | 0.4 | 7 realistic maps | 49 SynGO gene sets | Pearson Correlation | Competitive / Self-contained / Coexp-matched Competitive / Brain-specific Competitive | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
+| [S10](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S10-PLS1.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | PLS1 Coefficients | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, KS, Weighted KS |
+| [S11](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S11-PLS1-Coexp_matched.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | PLS1 Coefficients | Coexp-matched Competitive | Mean, Meanabs, Meansqr, Maxmean, Median, KS, Weighted KS |
+| [S12](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S12-PLS1-Brain_specific.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | PLS1 Coefficients | Brain-specific Competitive | Mean, Meanabs, Meansqr, Maxmean, Median, KS, Weighted KS |
+| [S13](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S13-PLS1-Realistic.html) | Desikan (34) | 0.4 | 7 realistic maps | 49 SynGO gene sets | PLS1 Coefficients | Competitive / Self-contained / Coexp-matched Competitive / Brain-specific Competitive | Mean, Meanabs, Meansqr, Maxmean, Median, KS, Weighted KS |
+| [S14](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S14-PLSR_Fit.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | PLSR Fit | Competitive / Self-contained | NA |
+| [S15](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S15-PLSR-Realistic.html) | Desikan (34) | 0.4 | 7 realistic maps | 49 SynGO gene sets | PLSR Fit | Competitive / Self-contained | NA |
+| [S16](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S16-Leave-one-region-out.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Leave-one-region-out correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, KS, Weighted KS |
+| [S17](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis/S17-Combined_null.html) | Desikan (34) | 0.4 | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Competitive and Self-contained combined | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
 
