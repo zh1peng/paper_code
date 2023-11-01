@@ -1,9 +1,8 @@
 # Unraveling the molecular relevance of brain phenotypes: A comparative analysis of null models and test statistics
 
-Main and Supplementary Analysis
-(Downlaod the html in analysis folder or click the link to preview the html)
+### Main and Supplementary Analysis
+(Download the html file from the [analysis folder](https://github.com/zh1peng/paper_code/tree/main/2023_Imaging_Transcriptomics/analysis) or click the links below👇 to preview the html)
 
-Table S2
 | Analysis | Atlas (Number of regions) | Rdonor | Brain data | Gene set | Association | Null model type | Test statistic (Aggregation method) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | [Main](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/Main.html) | Desikan (34) | 0.4 | 1000 simulated maps maps (Moran's I=0.03) | 500 simulated gene sets | Pearson Correlation | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, Sig Number, KS, Weighted KS |
@@ -28,6 +27,6 @@ Table S2
 
 | Analysis | Description |
 | --- | --- |
-|[S18](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S18-MoranI.html)|S18: Comparisons between the subsampling approach and Gaussian random fields (GRFs) approach in simulating random desikan, schaefer100 and schaefer200 data with spatial autocorrelation as measured by Global Moran's I|
-|[S19](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S19-Simulated_GeneSet_Size.html)|Analysis S19: Exploring the impacts of size of simulated gene sets on Psig-G|
+|[S18](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S18-MoranI.html)|Comparisons between the subsampling approach and Gaussian random fields (GRFs) approach in simulating random desikan, schaefer100 and schaefer200 data with spatial autocorrelation as measured by Global Moran's I|
+|[S19](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S19-Simulated_GeneSet_Size.html)|Exploring the impacts of size of simulated gene sets on Psig-G|
 |[S20](https://htmlpreview.github.io/?https://github.com/zh1peng/paper_code/blob/main/2023_Imaging_Transcriptomics/analysis/S20-MF_GeneSet_Size.html)|Exploring the impacts of size of molecular functions relevant gene sets on Psig-G|
