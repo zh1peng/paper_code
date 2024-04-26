@@ -1,0 +1,345 @@
+---
+title: "S10: Analysis using the partial least square (PLS) regression coefficients"
+output:
+  
+  html_document:
+    df_print: paged
+  html_notebook: default
+  word_document: default
+---
+
+```{css, echo=FALSE}
+.watch-out {
+  background-color: lightpink;
+  border: 3px solid red;
+  font-weight: bold;
+}
+```
+
+| Analysis | Atlas (Number of regions) | Rdonor | Brain data                            | Gene set                | Association          | Null model type        | Aggregation method                      |
+|----------|--------------------------|--------|---------------------------------------|-------------------------|-----------------------|------------------------|-----------------------------------------|
+| S10     | Desikan (34)             | 0.4    | 1000 simulated maps (Moran's I=0.03) | 500 simulated gene sets | PLS1 Regression Coefficients   | Competitive / Self-contained | Mean, Meanabs, Meansqr, Maxmean, Median, KS, Weighted KS |
+
+*Note: The significant number of associations was not feasible as an aggregation method for this analysis.*
+
+
+## 0. Setup
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+project_path='F:/Google Drive/post-doc/vitural_histology_revisit/revision_code'
+
+sim_res_path=sprintf('%s/results',project_path)
+result.path=sprintf('%s/reports',project_path)
+
+atlas='desikan'
+rdonor='r0.4'
+brain_type='sim_spatial0.03'
+gene_set_type='Sim'
+cor_type='pls1'
+null_type_level=c('random_gene',
+                   'spin_brain')
+null_type_label=c('Competitive null model',
+                   'Self-contained null model')
+stat_level=c('mean',
+            'meanabs',
+            'meansqr',
+            'maxmean',
+            'median',
+            'ks_orig',
+            'ks_weighted')
+stat_label=c('Mean',
+            'Meanabs',
+            'Meansqr',
+            'Maxmean',
+            'Median',
+            'KS',
+            'Weighted KS')
+```
+
+## 1. Load functions
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+source(sprintf('%s/functions/analysis_functions.R',project_path))
+source(sprintf('%s/functions/data_functions.R',project_path))
+source(sprintf('%s/functions/cor_functions.R',project_path))
+```
+
+## 2. Load Results
+```{r }
+
+# get the list of csv files
+res.files=list(
+  spin_brain=sprintf( '%s/Res_%s_%s_%s_%s_spin_brain_%s_sim1000.csv',sim_res_path,atlas,rdonor,brain_type,gene_set_type,cor_type),
+  random_gene=sprintf('%s/Res_%s_%s_%s_%s_random_gene_%s_sim1000.csv',sim_res_path,atlas,rdonor,brain_type,gene_set_type,cor_type))
+# read res.files
+res.df.list=lapply(res.files, read.csv, stringsAsFactors = F)
+```
+
+## 3. Psig-G analysis
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Extract pvals and group them by geneSet 
+# Psig-G is calculated for each gene set
+nest_by='geneSet'
+pvals.nested=lapply(res.df.list, get_pvals_nested, nest_by=nest_by, heat_plot=F)
+psig.list=lapply(pvals.nested, get_psig, if_fdr=F)
+```
+
+### 3.1.Plot Psig-G 
+#### Figure 2. A. Probability of significance for each gene set (Psig-G). B. Mean value and standard error (i.e., standard deviation/√500) of Psig-G across all the gene sets.
+```{r,warning=F,fig.height=16, fig.width=12}
+p1=plot_violin_psig_list(psig.list = psig.list,
+                         ylab2show = 'Psig-G',
+                         title2show = 'A.',
+                         title_adj = -0.07,
+                         stat_level = stat_level,
+                         stat_label = stat_label,
+                         null_type_level = null_type_level,
+                         null_type_label = null_type_label)
+p2=plot_bar_psig_list(psig.list, 
+                        ylab2show='Psig-G',
+                        title2show = 'B.',
+                        title_adj = -0.1,
+                        stat_level = stat_level,
+                         stat_label = stat_label,
+                         null_type_level = null_type_level,
+                         null_type_label = null_type_label)
+grid.arrange(p1,p2,ncol=1)
+
+```
+
+
+### 3.2.Examining the correlation between co-expression and Psig-G
+
+```{r,message=FALSE, warning=FALSE, paged.print=FALSE}
+coexp_info=get_geneSetList_info(data_path=sprintf('%s/data',project_path),
+                                 gs_type=gene_set_type,
+                                 atlas=atlas,
+                                 rdonor=rdonor)
+coexp_res.nested.list=lapply(psig.list, correlate_psig_with_info,info=coexp_info,var2test='coexp_mean')
+coexp_res.report.list=lapply(coexp_res.nested.list, report_res.nested)
+coexp_res.plot.list=lapply(coexp_res.nested.list, 
+                           plot_res.nested, 
+                           xlim2show=c(-0.02,0.11),
+                           annot_position=c(-0.01,0.5))
+```
+
+### 3.2.1. Plot correlation between co-expression and Psig-G
+#### Figure 3. Results of co-expression analysis for the competitive (A) and self-contained null model (B). The x-axis indicates the co-expression of a specific gene set and the y-axis indicates the probability of significance for a specific gene set (Psig-G). Each dot denotes a specific gene set with the lighter color denoting the larger size of the gene set. The horizontal dashed line denotes a Psig-G of 0.05. 
+```{r include=F}
+p3=grid.arrange(grobs=coexp_res.plot.list[[null_type_level[1]]],
+                ncol=2,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Co-expression",gp=gpar(fontsize=12,font=2)))
+p4=grid.arrange(grobs=coexp_res.plot.list[[null_type_level[2]]],
+                ncol=2,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Co-expression",gp=gpar(fontsize=12,font=2)))
+
+```
+
+```{r eval=FALSE,echo=T}
+p3=grid.arrange(grobs=coexp_res.plot.list[[null_type_level[1]]],
+                ncol=2,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Co-expression",gp=gpar(fontsize=12,font=2)))
+p4=grid.arrange(grobs=coexp_res.plot.list[[null_type_level[2]]],
+                ncol=2,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-G",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Co-expression",gp=gpar(fontsize=12,font=2)))
+grid.arrange(p3,p4)
+```
+```{r fig.height=16, fig.width=12, echo=FALSE}
+grid.arrange(p3,p4)
+```
+
+
+### 3.2.2. Report correlation between co-expression and Psig-G
+
+```{r,eval=FALSE}
+df1=coexp_res.report.list[[null_type_level[1]]]
+df2=coexp_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+```{r,echo=FALSE}
+df1=coexp_res.report.list[[null_type_level[1]]]
+df2=coexp_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+
+## 4. Psig-B analysis
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE,echo=F}
+# Extract pvals and group them by brain map
+# Psig-B is calculated for each brain map
+nest_by='brain' 
+pvals.nested=lapply(res.df.list, get_pvals_nested, nest_by=nest_by, heat_plot=F) 
+psig.list=lapply(pvals.nested, get_psig, if_fdr=F) 
+```
+
+### 4.1. Plot Psig-B
+#### Figure 4. A. Probability of significance for each simulated brain map (Psig-B). B. Mean value and standard error (i.e., standard deviation/√1000) of Psig-B across all the simulated brain maps.
+```{r,warning=F,fig.height=16, fig.width=12}
+p1=plot_violin_psig_list(psig.list = psig.list,
+                         ylab2show = 'Psig-B',
+                         title2show = 'A.',
+                         title_adj = -0.086,
+                         stat_level = stat_level,
+                         stat_label = stat_label,
+                         null_type_level = null_type_level,
+                         null_type_label = null_type_label)
+p2=plot_bar_psig_list(psig.list, 
+                        ylab2show='Psig-B',
+                        title2show = 'B.',
+                        title_adj = -0.1,
+                        stat_level = stat_level,
+                         stat_label = stat_label,
+                         null_type_level = null_type_level,
+                         null_type_label = null_type_label)
+grid.arrange(p1,p2,ncol=1)
+```
+
+
+### 4.2. Examine the correlation between Kurtosis and Psig-B
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# For PLS correlation, Kurtosis of the PLS1 regression coefficients better explained the variance of Psig-B than bimodality.
+brain_info=get_brain_info(data_path=sprintf('%s/data',project_path),
+                          atlas=atlas,
+                          rdonor=rdonor,
+                          brain_type=brain_type,
+                          method=cor_type)
+brain_res.nested.list=lapply(psig.list, correlate_psig_with_info,info=brain_info,var2test='kurtosis')
+brain_res.report.list=lapply(brain_res.nested.list, report_res.nested)
+brain_res.plot.list=lapply(brain_res.nested.list,plot_res.nested,
+                           annot_position=c(1.5,0.95),
+                           xlim2show=c(1,5),
+                           ylim2show=c(-0.05,1))
+```
+
+### 4.2.1. Plot correlation between Psig-B and kurtosis
+#### Figure 5. Results of the kurtosis analysis for the competitive (A) and self-contained null model (B). The x-axis indicates the kurtosis of the PLS1 regression coefficients between a specific brain map and transcriptional profiles of background genes. The y-axis indicates the probability of significance for a specific brain map (Psig-B). Each dot denotes a brain map and the horizontal dashed line denotes a Psig-B value of 0.05.
+```{r include=F}
+p3=grid.arrange(grobs=brain_res.plot.list[[null_type_level[1]]],
+                ncol=2,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-B",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Kurtosis",gp=gpar(fontsize=12,font=2)))
+p4=grid.arrange(grobs=brain_res.plot.list[[null_type_level[2]]],
+                ncol=2,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-B",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Kurtosis",gp=gpar(fontsize=12,font=2)))
+```
+```{r eval=FALSE,echo=T}
+p3=grid.arrange(grobs=brain_res.plot.list[[null_type_level[1]]],
+                ncol=2,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-B",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Kurtosis",gp=gpar(fontsize=12,font=2)))
+p4=grid.arrange(grobs=brain_res.plot.list[[null_type_level[2]]],
+                ncol=2,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-B",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Kurtosis",gp=gpar(fontsize=12,font=2)))
+grid.arrange(p3,p4)
+```
+```{r echo=FALSE, fig.height=16, fig.width=10}
+grid.arrange(p3,p4)
+```
+
+### 4.2.2. Report correlation between Psig-B and Kurtosis
+```{r,eval=FALSE,echo=TRUE}
+df1=brain_res.report.list[[null_type_level[1]]]
+df2=brain_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+```{r,echo=FALSE}
+df1=brain_res.report.list[[null_type_level[1]]]
+df2=brain_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+
+### 4.3. Examine the correlation between BI-dip and Psig-B
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# `var2test='pos_neg_dist'` is for BI-dist `var2test='modetest_stat'` is for BI-dip. default method is dip test
+brain_res.nested.list=lapply(psig.list, correlate_psig_with_info,info=brain_info,var2test='modetest_stat')
+brain_res.report.list=lapply(brain_res.nested.list, report_res.nested)
+brain_res.plot.list=lapply(brain_res.nested.list,plot_res.nested, 
+                           annot_position=c(0.02,0.95),
+                           xlim2show=c(0,0.06),
+                           ylim2show=c(-0.05,1))
+```
+
+### 4.3.1. Plot correlation between Psig-B and BI-dip 
+#### Results of the bimodality analysis for the competitive (A) and self-contained null model (B). The x-axis indicates the bimodality of the correlations between a specific brain map and transcriptional profiles of background genes, which was measured using the dip test statistic. The y-axis indicates the probability of significance for a specific brain map (Psig-B). Each dot denotes a brain map and the horizontal dashed line denotes a Psig-B value of 0.05.
+```{r include=F}
+p3=grid.arrange(grobs=brain_res.plot.list[[null_type_level[1]]],
+                ncol=2,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-B",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Bimodality",gp=gpar(fontsize=12,font=2)))
+p4=grid.arrange(grobs=brain_res.plot.list[[null_type_level[2]]],
+                ncol=2,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-B",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Bimodality",gp=gpar(fontsize=12,font=2)))
+```
+```{r eval=FALSE,echo=T}
+p3=grid.arrange(grobs=brain_res.plot.list[[null_type_level[1]]],
+                ncol=2,
+                top = textGrob(sprintf("A. %s",null_type_label[1]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-B",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Bimodality",gp=gpar(fontsize=12,font=2)))
+p4=grid.arrange(grobs=brain_res.plot.list[[null_type_level[2]]],
+                ncol=2,
+                top = textGrob(sprintf("B. %s",null_type_label[2]),gp=gpar(fontsize=16,font=1),x = -0.01, hjust = 0),
+                left =textGrob("Psig-B",gp=gpar(fontsize=12,font=2),rot=90),
+                bottom=textGrob("Bimodality",gp=gpar(fontsize=12,font=2)))
+grid.arrange(p3,p4)
+```
+```{r echo=FALSE, fig.height=16, fig.width=10}
+grid.arrange(p3,p4)
+```
+
+
+### 4.3.2. Report correlation between Psig-B and BI-dip
+```{r,eval=FALSE,echo=TRUE}
+df1=brain_res.report.list[[null_type_level[1]]]
+df2=brain_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))
+kable_paper(sprintf('Psig_B_dist_%s.csv',null_type_label[1]))
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+```{r,echo=FALSE}
+df1=brain_res.report.list[[null_type_level[1]]]
+df2=brain_res.report.list[[null_type_level[2]]]
+kable(df1,caption = sprintf("A. %s",null_type_label[1]))%>%
+  kable_styling(full_width = FALSE, position = "float_left")
+kable(df2,caption = sprintf("B. %s",null_type_label[2]))%>%
+  kable_styling(full_width = FALSE, position = "left")
+```
+
+
+
