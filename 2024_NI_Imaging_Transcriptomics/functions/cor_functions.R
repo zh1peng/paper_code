@@ -433,7 +433,7 @@ caculate_pvals <- function(statList.true, statList.null,method=c('standard','spl
 
   if (method=='standard'){
   pvals=purrr::map2(statList.true, statList.null, function(true_stat, null_stat) {
-    sum(abs(null_stat) >= abs(true_stat)) / (length(null_stat) + 1)
+    (sum(abs(null_stat) >= abs(true_stat))+1) / (length(null_stat) + 1) # fix the issue of 0 pval
   })} else if (method=='split_pos_neg'){
   pvals=purrr::map2(statList.true, statList.null, function(true_stat, null_stat) {
     ifelse(true_stat >= 0,
