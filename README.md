@@ -9,6 +9,7 @@
 |[2023_FIN_Bayesian_adjustment](https://github.com/zh1peng/paper_code/tree/main/2023_FIN_Bayesian_adjustment)|Cao, Z., McCabe, M., Callas, P., Cupertino, R.B., Ottino-Gonzalez, J., ... Garavan, H., & the ENIGMA Addiction Working Group. (2023). Recalibrating single-study effect sizes using hierarchical Bayesian models. Frontiers in Neuroimaging, 2, Article 1138193.|
 |[2024_NI_Imaging_Transcriptomics](https://github.com/zh1peng/paper_code/tree/main/2024_NI_Imaging_Transcriptomics)| Cao, Z., Zhan, G., Qin, J., Cupertino, R. B., Ottino-Gonzalez, J., Murphy, A., ... & Garavan, H. (2024). Unraveling the molecular relevance of brain phenotypes: A comparative analysis of null models and test statistics. NeuroImage, 120622.|
 |2023_Alcohol_dependence_subtypes| Identification of cortical-based subtypes in alcohol dependence (In prep)|
+|[2025_ORA_Background_Omission](https://github.com/zh1peng/paper_code/tree/main/2025_ORA_Background_Omission)| Cao, Z.,  Qin, J., Zhan, G. (2024). A critical evaluation of background gene omission in imaging transcriptomics (Submitted)|
 
 
 
