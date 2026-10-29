@@ -1,0 +1,30 @@
+field,type,definition
+cohort,character,"NHANES | CHARLS | HRS | KLOSA"
+id,character,"Stable participant ID within cohort; retain original values and do not convert long IDs through floating point"
+wave,numeric,"Ordered survey-wave index; NHANES cycles 1 to 4 correspond to 2005-2006 through 2011-2012"
+interviewed,logical,"TRUE for an observed interview at this wave; never NA"
+age_eligible,logical,"TRUE when observed age is at least 45; FALSE for missing age; never NA"
+age,numeric,Age in years at this visit
+gender,factor,"Male | Female (in this order)"
+education_group,factor,"Less than High School | High School | More than High School (in this order)"
+marital_status,factor,"Other | Married (in this order); cohort-specific harmonized marital definition"
+smoking,factor,"No | Yes (in this order); current smoking"
+drinking,factor,"No | Yes (in this order); cohort-specific alcohol definition in manuscript"
+bmi,numeric,Body mass index in kg/m2 at this visit
+depression_score,numeric,"CES-D-10 in CHARLS and KLoSA; CES-D-8 in HRS; PHQ-9 in NHANES; retain unavailable scores as NA"
+depression_binary,integer,"0 or 1: score >=3 in HRS and >=10 in other cohorts; NA if score missing"
+diabetes,integer,"0/1/NA harmonized diabetes status; NHANES includes the manuscript fasting-glucose definition"
+heart_disease,integer,0/1/NA harmonized heart-disease status
+stroke,integer,0/1/NA harmonized stroke status
+cmm,integer,"1 if at least two components positive; 0 if at least two negative; otherwise NA"
+base_count,numeric,"Sum of the three disease indicators; NA if any component is missing (stricter than classifiable CMM)"
+hypertension,integer,0/1/NA diagnosed hypertension for Table 1 only
+time_calendar,numeric,"Interview year + (month - 0.5)/12; NA when interview date is not evaluable"
+death_time,numeric,"Recorded death year + (month - 0.5)/12; year + 0.5 when year known but month missing; NA when death year unknown"
+known_dead,logical,"Participant-level known-death flag even when date unavailable; repeated across waves; never NA"
+date_conflict,logical,"TRUE for an observed interview more than 1/12 year after recorded death; any TRUE excludes that participant from longitudinal follow-up"
+CRP_raw,numeric,"C-reactive protein in mg/L; contemporaneous eligible blood visit only; nonnegative; otherwise NA"
+WBC_raw,numeric,"White blood cell count in 10^9/L; contemporaneous eligible blood visit only; positive; otherwise NA"
+weight_fasting,numeric,"NHANES four-cycle pooled fasting-subsample weight; keep the same scaling for all NHANES modules; NA outside NHANES"
+psu,numeric,NHANES primary sampling unit; required for positive-weight NHANES rows
+stratum,numeric,NHANES survey stratum; required for positive-weight NHANES rows

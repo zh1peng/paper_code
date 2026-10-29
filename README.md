@@ -11,6 +11,7 @@
 |2023_Alcohol_dependence_subtypes| Identification of cortical-based subtypes in alcohol dependence (In prep)|
 |[2025_ORA_Background_Omission](https://github.com/zh1peng/paper_code/tree/main/2025_ORA_Background_Omission)| Cao, Z.,  Qin, J., Zhan, G. (2025). A critical evaluation of background gene omission in imaging transcriptomics (Submitted)|
 |[2025_BrainEnrich_analysis](https://github.com/zh1peng/paper_code/tree/main/2025_BrainEnrich_analysis)| Cao, Z. et. al (2025). BrainEnrich: Revealing biological insights for imaging-derived phenotypes through transcriptomic enrichment  (Submitted)|
+|[2026_Depressive_Symptoms_CMM](https://github.com/zh1peng/paper_code/tree/main/2026_Depressive_Symptoms_CMM)|Depressive Symptoms and Cardiometabolic Multimorbidity: A Multicohort Study of Adults Aged 45 Years or Older in China, South Korea, and the United States (Under revision)|
 
 
 
